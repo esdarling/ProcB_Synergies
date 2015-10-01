@@ -1,0 +1,16 @@
+library(ggplot2)
+library(RColorBrewer)
+library(gdata)
+library(gtools) 
+library(RgoogleMaps)
+library(ggmap)   
+library(dplyr)
+library(car)
+library(reports)
+library(tidyr)
+library(reshape2)
+library(rmarkdown)
+library(knitr)
+library(readxl)
+
+
