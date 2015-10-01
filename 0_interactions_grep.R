@@ -78,7 +78,7 @@ head(dfull$check)
 hist(dfull$check)
 dfull <- subset(dfull, check > 0)
 
-setwd("/Users/emilydarling/Documents/Work/GitHub/ProcB_Synergies/3_full dbase")
+setwd("/Users/emilydarling/Documents/Work/GitHub/ProcB_Synergies/data3_full dbase")
 write.csv(dfull, "interaction database_ProcB_v2.csv", row.names = FALSE)
 
 
