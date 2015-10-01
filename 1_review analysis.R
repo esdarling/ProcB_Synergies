@@ -1,11 +1,21 @@
-# code to run ProcB review analyses, figures of interaction database
 
-d <- read.csv("interaction database_ProcB.csv", header = TRUE, stringsAsFactors = FALSE)  
+# code to run analyses and figures of interaction papers database
+setwd("/Users/emilydarling/Documents/Work/GitHub/ProcB_Synergies/data3_full dbase")
+d <- read.csv("interaction database_ProcB_v2.csv", header = TRUE, stringsAsFactors = FALSE)  
 head(d)
 names(d)
 nrow(d)
 
+names(d)[3] <- "journal"
 d$journal <- tolower(d$journal)
+unique(d$journal)
+
+journal.key <- as.data.frame(x = unique(d$journal))
+journal.key <- order(journal.key)
+
+write.csv(journal.key, "journal.key.csv")
+
+
 #recode journal names
 d$journal <- recode(d$journal, 
 "'acta oecologica-international journal of ecology' = 'acta oecologica';
@@ -13,6 +23,7 @@ d$journal <- recode(d$journal,
 'annual review of ecology, evolution, and systematics' = 'annual review of ecology evolution and systematics';
 'annual review of ecology, evolution, and systematics, vol 44' = 'annual review of ecology evolution and systematics';
 'annual review of ecology, evolution, and systematics, vol 45' = 'annual review of ecology evolution and systematics';
+'annual review of ecology, evolution, and systematics, vol 41' = 'annual review of ecology evolution and systematics';
 'proceedings of the national academy of sciences' = 'pnas';
 'proceedings of the national academy of sciences of the united states of america' = 'pnas';
 'proceedings of the royal society b-biological sciences' = 'procb';
@@ -20,8 +31,8 @@ d$journal <- recode(d$journal,
 'rangeland ecology & management' = 'rangeland ecology and management';
 'trends in ecology & evolution' = 'trends in ecology and evolution'")
 
-#journal.key <- as.data.frame(x = unique(d$journal))
-#write.csv(journal.key, "journal.key.csv")
+journal.key <- as.data.frame(x = unique(d$journal))
+write.csv(journal.key, "journal.key.csv")
 
 #186 journals
 unique(d$journal)
