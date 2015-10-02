@@ -1,4 +1,6 @@
 # code to run analyses and figures of interaction papers database
+setwd("/Users/emilydarling/Documents/Work/GitHub/ProcB_Synergies/data3_full dbase")
+d <- read.csv("interaction database_ProcB_v3.csv", header = TRUE, stringsAsFactors = FALSE)  
 
 # Darling, Brown 1 Oct 2015
 
@@ -27,18 +29,15 @@ overdisp_fun <- function(model) {
 # setwd("/Users/emilydarling/Documents/Work/GitHub/ProcB_Synergies/data3_full dbase")
 
 setwd('/Users/s2973410/Code/ProcB_Synergies/data3_full dbase')
-d <- read.csv("interaction database_ProcB_v2.csv", header = TRUE, stringsAsFactors = FALSE)  
-
-
-
+d <- read.csv("interaction database_ProcB_v3.csv", header = TRUE, stringsAsFactors = FALSE)  
 head(d)
 names(d)
 nrow(d)
 
 names(d)[3] <- "journal"
 d$journal <- tolower(d$journal)
-unique(d$journal)
 
+#make journal key to check for spelling changes
 journal.key <- as.data.frame(x = unique(d$journal))
 names(journal.key)[1] <- "journal"
 head(journal.key)
@@ -55,8 +54,12 @@ d$journal <- recode(d$journal,
 #117 journals
 unique(d$journal)
 
-#procB time analysis
-names(d)[8] <- "year"
+#summary analysis
+names(d)[7] <- "year"
+min(d$year); max(d$year)
+
+# 619 journal articles
+nrow(d)
 
 d2 <- d %>%
   select(year, title, journal, type, times_cited, synergy, antag, additive)
@@ -68,8 +71,15 @@ d3 <- melt(d2, id.vars = 1:5, variable.name = "interaction")
 d3 <- d3[-which(d3$value == 0),]
 head(d3)
 
+#733 interactions
+nrow(d3)
+
+table(d3$interaction)
+424/733
+215/733
+94/733
+
 unique(d3$type)
-min(d3$year); max(d3$year)
 
 d4 <- d3 %>%
   select(year, interaction, value) %>%
@@ -78,8 +88,25 @@ d4 <- d3 %>%
 d4
 
 # plot of interaction types over time
-ggplot(data = subset(d4, year < 2015), aes(x = year, y = sum)) + 
-  geom_line(aes(colour = interaction), size = 1)
+# fig 2 for manuscript
+unique(d4$interaction)
+d4$interaction <- factor(d4$interaction, levels = c("synergy", "additive","antag"))
+int.plot <- ggplot(data = subset(d4, year < 2015), aes(x = year, y = sum)) + 
+  geom_line(aes(colour = interaction), size = 1.5) + 
+  scale_x_continuous("Year", expand = c(0.01,0.01)) + 
+  scale_y_continuous("Number of papers", expand = c(0.05, 0.05)) + 
+  theme_bw(base_size = 16) + 
+  theme(legend.key = element_rect(colour = NA)) + 
+  scale_colour_manual("Interaction type", 
+                        labels = c("Synergy", "Additive", "Antagonism"),
+                        values = c("red","darkorange","navyblue")) + 
+  theme(axis.title.y = element_text(vjust = 1)) + 
+  theme(axis.title.x = element_text(vjust = -0.25))
+
+setwd("/Users/emilydarling/Documents/Work/GitHub/ProcB_Synergies/plots")
+pdf("interactions over time.pdf", width = 6.5, height = 3.5)
+int.plot
+dev.off()
 
 # calculate perc. of synergies
 head(d4)
@@ -93,6 +120,7 @@ d5 <- d4  %>%
 d5
 
 # plot of proportion synergy papers over time
+# nope, don't do this
 ggplot(data = subset(d5, year < 2015), aes(x = year, y = prop_synerg)) + 
   geom_line(colour = "red", size = 1)
 
@@ -194,6 +222,9 @@ termplot(m3fa, se = TRUE, partial.resid=T, col.term = 'black', col.se = 'grey20'
 
 confint(m3fa)
 
+
+
+subset(d3, times_cited > 300)
 
 
 
