@@ -105,7 +105,7 @@ with(d3, table(synergy, antag, additive))
 
 d3$int_type <- rep('Additive only', nrow(d3))
 d3$int_type[d3$synergy ==1 & d3$antag ==0] <- 'Synergy only'
-d3$int_type[d3$synergy ==0 & d3$antag ==1] <- 'Antag only'
+d3$int_type[d3$synergy ==0 & d3$antag ==1] <- 'Antagonism only'
 d3$int_type[d3$synergy ==1 & d3$antag ==1] <- 'All types'
 
 table(d3$int_type)
@@ -187,14 +187,14 @@ plot(pred1$fit, xvals, yaxt = 'n', ylab = '', xlab ='Number of citations', pch =
 #Add shading
 lines(c(-112, -112), c(8,4.8), xpd = NA)
 lines(c(-112, -112), c(4.3,0.5), xpd = NA)
-rect(0,0,220,4.5, col = 'grey80', border = NA)
+rect(0.01,0.01,219.9,4.49, col = 'grey80', border = NA)
 
 #Add points back in with error bars
 points(pred1$fit, xvals, pch = 16, cex = 1)
 arrows(sebars[,1], xvals, sebars[,2], xvals, len=0, lwd = 2)
 
-text(-115, xvals, labnams, xpd = NA, cex = 0.8, pos = 4)
-text(-135, c(2,7), labnams2, xpd = NA, cex = 0.8, srt = 90)
+text(-115, xvals, labnams, xpd = NA, cex = 0.6, pos = 4)
+text(-135, c(2.5,6.5), labnams2, xpd = NA, cex = 0.8, srt = 90)
 
 
 
