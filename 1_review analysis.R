@@ -28,6 +28,7 @@ overdisp_fun <- function(model) {
 
 setwd("/Users/emilydarling/Documents/Work/GitHub/ProcB_Synergies/data3_full dbase")
 
+## summary analysis of database for Em's section
 #setwd('/Users/s2973410/Code/ProcB_Synergies/data3_full dbase')
 d <- read.csv("interaction database_ProcB_v3.csv", header = TRUE, stringsAsFactors = FALSE)  
 head(d)
@@ -38,9 +39,37 @@ nrow(d)
 names(d)[7] <- "year"
 min(d$year); max(d$year)
 
-# 619 journal articles
-nrow(d)
+#117 journals
+unique(d$journal)
 
+# 616 journal articles
+nrow(d)
+names(d)
+
+#proportion of interaction statistics
+with(d, table(synergy))
+424/619
+
+with(d, table(additive))
+215/619
+
+with(d, table(antag))
+94/61
+
+#2014 summary sentence
+with(subset(d, year == 2014), table(synergy))
+with(subset(d, year == 2014), table(additive))
+with(subset(d, year == 2014), table(antag))
+
+#51 synergies
+#21 additive
+#13 antag
+
+51 / (51+21+13)
+
+54/34
+
+#select and melt to long
 d2 <- d %>%
   select(year, title, journal, type, times_cited, synergy, antag, additive)
 
@@ -60,6 +89,7 @@ table(d3$interaction)
 94/733
 
 unique(d3$type)
+
 
 d4 <- d3 %>%
   select(year, interaction, value) %>%
