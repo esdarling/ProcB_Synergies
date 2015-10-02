@@ -181,16 +181,16 @@ sebars <- cbind(pred1$fit + pred1$se.fit, pred1$fit - pred1$se.fit)
 dev.new(width = 8, height = 4)
 par(mfrow = c(1,2), las = 1)
 
-# Plot one levels at 8 years
+# Plot one levels at 15 years
 par(mar = c(4, 8, 2, 2))
-plot(pred1$fit, xvals, yaxt = 'n', ylab = '', xlab ='Number of citations', pch = 16, cex = 1.4, xlim = c(0, 220), ylim = c(0.5, 8.5), xaxs = 'i', yaxs = 'i')
+plot(pred1$fit, xvals, yaxt = 'n', ylab = '', xlab ='Number of citations', pch = 16, cex = 1, xlim = c(0, 220), ylim = c(0.5, 8.5), xaxs = 'i', yaxs = 'i')
 #Add shading
 lines(c(-112, -112), c(8,4.8), xpd = NA)
 lines(c(-112, -112), c(4.3,0.5), xpd = NA)
 rect(0,0,220,4.5, col = 'grey80', border = NA)
 
 #Add points back in with error bars
-points(pred1$fit, xvals, pch = 16, cex = 1.4)
+points(pred1$fit, xvals, pch = 16, cex = 1)
 arrows(sebars[,1], xvals, sebars[,2], xvals, len=0, lwd = 2)
 
 text(-115, xvals, labnams, xpd = NA, cex = 0.8, pos = 4)
