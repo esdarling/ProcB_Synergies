@@ -26,33 +26,13 @@ overdisp_fun <- function(model) {
 }
 
 
-# setwd("/Users/emilydarling/Documents/Work/GitHub/ProcB_Synergies/data3_full dbase")
+setwd("/Users/emilydarling/Documents/Work/GitHub/ProcB_Synergies/data3_full dbase")
 
-setwd('/Users/s2973410/Code/ProcB_Synergies/data3_full dbase')
+#setwd('/Users/s2973410/Code/ProcB_Synergies/data3_full dbase')
 d <- read.csv("interaction database_ProcB_v3.csv", header = TRUE, stringsAsFactors = FALSE)  
 head(d)
 names(d)
 nrow(d)
-
-names(d)[3] <- "journal"
-d$journal <- tolower(d$journal)
-
-#make journal key to check for spelling changes
-journal.key <- as.data.frame(x = unique(d$journal))
-names(journal.key)[1] <- "journal"
-head(journal.key)
-journal.key <- journal.key[order(journal.key$journal),]
-
-#write.csv(journal.key, "journal.key.csv")
-
-#recode journal names
-d$journal <- recode(d$journal, 
-"'annual review of ecology, evolution, and systematics, vol 44' = 'annual review of ecology evolution and systematics';
-'annual review of ecology, evolution, and systematics, vol 45' = 'annual review of ecology evolution and systematics';
-'annual review of ecology, evolution, and systematics, vol 41' = 'annual review of ecology evolution and systematics'")
-
-#117 journals
-unique(d$journal)
 
 #summary analysis
 names(d)[7] <- "year"
@@ -225,6 +205,37 @@ confint(m3fa)
 
 
 subset(d3, times_cited > 300)
+
+
+
+## old emily analysis for cleaning database
+hist(d$check)
+d$check <- rowSums(d[,12:14])
+subset(d, check == 0)
+
+d <- subset(d, check > 0)
+nrow(d)
+write.csv(d, "interaction database_ProcB_v3.csv", row.names = FALSE)
+
+names(d)[3] <- "journal"
+d$journal <- tolower(d$journal)
+
+#make journal key to check for spelling changes
+journal.key <- as.data.frame(x = unique(d$journal))
+names(journal.key)[1] <- "journal"
+head(journal.key)
+journal.key <- journal.key[order(journal.key$journal),]
+
+#write.csv(journal.key, "journal.key.csv")
+
+#recode journal names
+d$journal <- recode(d$journal, 
+                    "'annual review of ecology, evolution, and systematics, vol 44' = 'annual review of ecology evolution and systematics';
+'annual review of ecology, evolution, and systematics, vol 45' = 'annual review of ecology evolution and systematics';
+'annual review of ecology, evolution, and systematics, vol 41' = 'annual review of ecology evolution and systematics'")
+
+#117 journals
+unique(d$journal)
 
 
 
