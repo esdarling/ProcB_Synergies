@@ -1,0 +1,17 @@
+"type","method","no_papers","Freq"
+"total","not_tested",203,44.1304347826087
+"total","glm_interactions",185,40.2173913043478
+"total","null.model",108,23.4782608695652
+"total","other",31,6.73913043478261
+"synergy","not_tested",190,48.3460559796438
+"synergy","glm_interactions",143,36.3867684478371
+"synergy","null.model",89,22.64631043257
+"synergy","other",27,6.87022900763359
+"additive","not_tested",26,19.5488721804511
+"additive","glm_interactions",74,55.6390977443609
+"additive","null.model",43,32.3308270676692
+"additive","other",15,11.2781954887218
+"antagonism","not_tested",17,18.4782608695652
+"antagonism","glm_interactions",44,47.8260869565217
+"antagonism","null.model",42,45.6521739130435
+"antagonism","other",14,15.2173913043478
