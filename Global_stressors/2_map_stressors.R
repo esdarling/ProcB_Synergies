@@ -42,7 +42,7 @@ maxn <- rsum@data@max
 #Number of possible interactions starting at one way (ie none), then 2 way interactions etc...
 nints_2way <- c(0, choose(1:maxn, 2))
 nints_3way <- c(0, choose(1:maxn, 3))
-nints_2_3way <- nints_2way + nints_3way
+nints_2_3way <- nints_2way #+ nints_3way
 
 rcl <- cbind(0:maxn, nints_2_3way)
 #This step takes about a 90 seconds if using full dataset
@@ -59,9 +59,10 @@ colsum <- pal.cont(brewer.pal(8, 'BuPu'), maxn)
 numbreaks <- c(0,1:maxn)
 
 #Number interactions plot
-colint <- pal.cont(brewer.pal(8, 'Reds'), 20)
-numbreaks.int <- round(c(0,seq(1, 1000, length.out = 20)))
-
+# colint <- rev(pal.cont(brewer.pal(8, 'RdBu')[c(1:4, 7)], 11))
+colint <- brewer.pal(8, 'RdBu')[c(7,6,4,3,2,1)]
+numbreaks.int <- c(0, 1, 10, 50, 100, 200)#round(c(0, 10, seq(1, 200, length.out = 10)))
+# pie(rep(1, 8), col = brewer.pal(8, 'RdBu'))
 
 #lines plot
 lwduse <- 2
@@ -76,11 +77,10 @@ par(mfrow = c(1,2), mar = c(2,2,1,6))
 # Will need to use layout and 'legend.only = T' to position legends
 
 #Part 1, number of stressors
-plot(rsum, maxpixels = 10000, colNA = colNA, col = colsum, breaks = numbreaks, lab.breaks = NA, xaxt = 'n', yaxt = 'n', axis.args = list(at = c(1, 5, 10, 15), labels = T), legend.width = 1.5, asp = NA, bty = 'n')
+plot(rsum, colNA = colNA, col = colsum, breaks = numbreaks, lab.breaks = NA, xaxt = 'n', yaxt = 'n', axis.args = list(at = c(1, 5, 10, 15), labels = T), legend.width = 1.5, asp = NA, bty = 'n')
 
 #Part 2, number of interactions
-plot(rints, maxpixels = 10000, colNA = colNA, col = colint, breaks = numbreaks.int, lab.breaks = NA, xaxt = 'n', yaxt = 'n', axis.args = list(at = c(1, 500, 1000), labels = T), legend.width = 1.5, asp = NA, bty = 'n')
-
+plot(rints, colNA = colNA, col = colint, breaks = numbreaks.int, lab.breaks = NA, xaxt = 'n', yaxt = 'n', axis.args = list(at = c(1, 50, 100, 150, 200), labels = T), legend.width = 1.5, asp = NA, bty = 'n')
 
 #Part 3, subset, relationship num stressors to num interactions
 plotdim <- par("plt")
@@ -98,15 +98,16 @@ par(
 
 # add inset
 par(las = 1)
-plot(rcl, xlab = 'Number of stressors', ylab = 'Number of interactions', type = 'l', lwd = lwduse, col = collines[1], bg = 'white', xaxp = c(0, maxn, 1), yaxp = c(0, maxint, 1), cex.axis = 0.8)
+plot(rcl, xlab = 'Number of stressors', ylab = 'Number of interactions', type = 'l', lwd = lwduse, col = collines[1], bg = 'white', xaxp = c(0, maxn, 1), yaxp = c(0, maxint, 1), cex.axis = 0.7)
 rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = 
 "white")
-lines(rcl, lwd = lwduse, col = collines[1])
-lines(rcl[,1], nints_2way, lwd = lwduse, col = collines[2])
-lines(rcl[,1], nints_3way, lwd = lwduse, col = collines[3])
+ lines(rcl, lwd = lwduse, col = collines[1])
+# lines(rcl[,1], nints_2way, lwd = lwduse, col = collines[2])
+# lines(rcl[,1], nints_3way, lwd = lwduse, col = collines[3])
 
-legend('topleft', legend = c('2 and 3-way','2-way', '3-way'), lwd = 2, col = collines, cex = 0.5, bty = 'n')
+# legend('topleft', legend = c('2 and 3-way','2-way', '3-way'), lwd = 2, col = collines, cex = 0.5, bty = 'n')
 
+text(8, -46, paste('Number of','\n',' stressors'), xpd = NA, cex = 0.6)
 
-
+text(-6, 77, paste('Number','\n',' of 2-way','\n',' interactions'), xpd = NA, cex = 0.6, srt = 90)
 
