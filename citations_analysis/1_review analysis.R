@@ -1,6 +1,7 @@
-# Code to run analyses and figures of interaction papers database
+# Code to run analyses of citations for interaction papers database
 # Darling, Brown, Cote
-# 2 Oct 2015
+# 26 Oct 2015
+rm(list = ls())
 
 #Data manip packages
 library(dplyr)
@@ -15,7 +16,7 @@ library(MASS)
 # Function for checking overdispersion in lme4 models
 # from: http://glmm.wikidot.com/faq
 overdisp_fun <- function(model) {
-  ## number of variance parameters in 
+  ## number of variance parameters in
   ##   an n-by-n variance-covariance matrix
   vpars <- function(m) {
     nrow(m)*(nrow(m)+1)/2
@@ -38,7 +39,7 @@ overdisp_fun <- function(model) {
 # setwd("/Users/emilydarling/Documents/Work/GitHub/ProcB_Synergies/data3_full dbase")
 
 setwd('/Users/s2973410/Code/ProcB_Synergies/data3_full dbase')
-d <- read.csv("interaction database_ProcB_v3.csv", header = TRUE, stringsAsFactors = FALSE)  
+d <- read.csv("interaction database_ProcB_v3.csv", header = TRUE, stringsAsFactors = FALSE)
 head(d)
 names(d)
 nrow(d)
@@ -60,7 +61,7 @@ journal.key <- journal.key[order(journal.key$journal),]
 #write.csv(journal.key, "journal.key.csv")
 
 #recode journal names
-d$journal <- recode(d$journal, 
+d$journal <- recode(d$journal,
 "'annual review of ecology, evolution, and systematics, vol 44' = 'annual review of ecology evolution and systematics';
 'annual review of ecology, evolution, and systematics, vol 45' = 'annual review of ecology evolution and systematics';
 'annual review of ecology, evolution, and systematics, vol 41' = 'annual review of ecology evolution and systematics'")
@@ -70,10 +71,10 @@ d$type2 <- d$type
 d$type2[d$type == 'Review; Book Chapter'] <- 'Review'
 d$type2[d$type == 'Letter'] <- 'Article'
 d$type2[d$type == 'Article; Proceedings Paper'] <- 'Article'
+d$type2[d$type == 'Proceedings Paper'] <- 'Article'
 d$type2[d$type == 'Note'] <- 'Other'
 d$type2[d$type == 'Correction'] <- 'Other'
 d$type2[d$type == 'Editorial Material'] <- 'Other'
-d$type2[d$type == 'Proceedings Paper'] <- 'Other'
 
 table(d$type2)
 #118 journals
@@ -89,7 +90,7 @@ d$yearsince <- 2015 - d$year
 # 619 journal articles
 nrow(d)
 
-d2 <- d #%>% select(year, yearsince, title, journal, type, type2, times_cited, synergy, antag, additive) #this stopped working for some reason... doesn't really matter
+d2 <- d 
 
 head(d2)
 names(d2)
@@ -101,7 +102,7 @@ d3 <- d2 %>% filter(type2 != 'Other')
 with(d3, table(synergy, antag, additive))
 
 # Create new factor that is composite of interaction types
-# Levels are: 'additive only', 'additive and/or synergy', 'additive and/or antagonism', 'synergy and/or antagonism'. 
+# Levels are: 'additive only', 'additive and/or synergy', 'additive and/or antagonism', 'synergy and/or antagonism'.
 
 d3$int_type <- rep('Additive only', nrow(d3))
 d3$int_type[d3$synergy ==1 & d3$antag ==0] <- 'Synergy only'
@@ -115,39 +116,11 @@ table(d3$type2)
 ########################################
 
 #
-# Independent interaction types analysis
-#
-
-#
-# GLM - poisson 
-#
-
-m1 <- glm(times_cited ~ factor(additive) + factor(synergy) + factor(antag) + yearsince + type2, data = d3, family = 'poisson')
-summary(m1)
- 
-#! Looks over-inflated, try neg bin model
-
-#
-# GLM - negative binomial
-#
-
-m2 <- glm.nb(times_cited ~ factor(additive) + factor(synergy) + factor(antag) + ns(yearsince,3) + factor(type2), data = d3)
-summary(m2)
-
-
-dev.new(width = 9, height = 5)
-par(mfrow=c(2,3))
-termplot(m2, se = TRUE, partial.resid=T, col.term = 'black', col.se = 'grey20')
-
-confint(m2)
-
-
-#
 # Interaction types class analysis
 #
 
 #Interaction type * review interaction
-m3 <- glm.nb(times_cited ~ factor(int_type)*factor(type2) + ns(yearsince,3), data = d3)
+m3 <- glm.nb(times_cited ~ factor(int_type)*factor(type2) + ns(yearsince, df=3), data = d3)
 summary(m3)
 
 m4 <- update(m3, .~.-factor(int_type):factor(type2))
@@ -155,14 +128,14 @@ m4 <- update(m3, .~.-factor(int_type):factor(type2))
 anova(m3,m4)
 drop1(m3)
  # So interaction is signficant and has marginal information, so keep it one...
- 
+
 #
 # Plot effects
 #
 
 #Data frame for predicting to factors
 # Choosing 8 years as baseline, because this is where curve flattens out
-newdat <- expand.grid(int_type = unique(d3$int_type), type2 = unique(d3$type2),yearsince = 15)
+newdat <- expand.grid(int_type = unique(d3$int_type)[c(1, 2, 4, 3)], type2 = unique(d3$type2),yearsince = 15)
 
 pred1 <- predict(m3, newdata = newdat, type = 'response', se = T)
 
@@ -205,5 +178,8 @@ lines(newdat2$yearsince, pred2$fit + pred2$se.fit, lty = 2)
 lines(newdat2$yearsince, pred2$fit - pred2$se.fit, lty = 2)
 
 
-
-
+#
+# Calculate some stats
+#
+pred1$fit[1]/mean(pred1$fit[c(2:4)])
+pred1$fit[1]/mean(pred1$fit[c(5:8)])

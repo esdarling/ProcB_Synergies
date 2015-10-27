@@ -28,8 +28,13 @@ rsum.load<- raster('num_stressors_quant10.grd')
 #
 #Resample to speed things up for test runs
 #
-rsum <- sampleRegular(rsum.load, size = 1000000, asRaster = T)
-rsum[rsum[]==0] <- NA #get rid of NAs
+ rsum2 <- sampleRegular(rsum.load, size = 50000000, asRaster = T)
+# rsum2 <- rsum.load
+rsum2[rsum2[]==0] <- NA #get rid of NAs
+
+projrob <- CRS("+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs +towgs84=0,0,0")
+
+rsum <- projectRaster(rsum2, crs = projrob,method = 'ngb')
 
 #Max number of stressors
 maxn <- rsum@data@max
@@ -80,7 +85,7 @@ par(mfrow = c(1,2), mar = c(2,2,1,6))
 plot(rsum, colNA = colNA, col = colsum, breaks = numbreaks, lab.breaks = NA, xaxt = 'n', yaxt = 'n', axis.args = list(at = c(1, 5, 10, 15), labels = T), legend.width = 1.5, asp = NA, bty = 'n')
 
 #Part 2, number of interactions
-plot(rints, colNA = colNA, col = colint, breaks = numbreaks.int, lab.breaks = NA, xaxt = 'n', yaxt = 'n', axis.args = list(at = c(1, 50, 100, 150, 200), labels = T), legend.width = 1.5, asp = NA, bty = 'n')
+plot(rints, colNA = colNA, col = colint, breaks = numbreaks.int, lab.breaks = NA, xaxt = 'n', yaxt = 'n', axis.args = list(at = c(10, 50, 100, 200), labels = T), legend.width = 1.5, asp = NA, bty = 'n')
 
 #Part 3, subset, relationship num stressors to num interactions
 plotdim <- par("plt")
