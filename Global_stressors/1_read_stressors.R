@@ -10,7 +10,7 @@ rm(list = ls())
 
 library(raster)
 
-setwd('/Users/s2973410/Databases/Global stressors/urn_uuid_975e3a96_c912_4e41_a888_7cccab216bf6/data/')
+setwd('~/Databases/Global stressors/urn_uuid_975e3a96_c912_4e41_a888_7cccab216bf6/data/')
 
 foldnams <- list.files()
 nfold <- length(foldnams)
@@ -19,7 +19,7 @@ pquant <- 0.1 #threshold for quantile above which we count a stressor
 
 sover <- function(x,y){ return(x+y) }
 
-savenam <- paste('/Users/s2973410/Databases/Global stressors/num_stressors_quant', round(pquant*100), '.grd', sep ='')
+savenam <- paste('~/Databases/Global stressors/num_stressors_quant', round(pquant*100), '.grd', sep ='')
 
 # Loop through the pressure files
 
