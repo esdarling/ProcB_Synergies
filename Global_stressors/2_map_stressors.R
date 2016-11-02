@@ -22,7 +22,7 @@ pal.cont <- function(pal, n){
 # Load data
 #
 
-setwd('/Users/s2973410/Databases/Global stressors/')
+setwd('~/Databases/Global stressors/')
 rsum.load<- raster('num_stressors_quant10.grd')
 
 #
